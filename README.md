@@ -8,6 +8,17 @@
 
 ### make sure you run npm install to load all
 
+    if for any reason you are facing a timeout error you can try the next stuff
+        -update your .npmrc with
+            strict-ssl = false
+            ca = null
+            registry = http://registry.npmjs.org/
+            fetch-retry-mintimeout=200000
+            fetch-retry-maxtimeout=1200000
+        -if you have an antivirus that provide a vpn active the vpn
+        -set the google dns for you os
+    wish you luck!!!
+
 ### Now we can run the app with the command "npm run start"
 
 ### Now we can run test the app with the command "npm run test"
