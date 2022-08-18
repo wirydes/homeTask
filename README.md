@@ -9,3 +9,5 @@
 ### make sure you run npm install to load all
 
 ### Now we can run the app with the command "npm run start"
+
+### Now we can run test the app with the command "npm run test"
