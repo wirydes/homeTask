@@ -2,6 +2,7 @@ import React from 'react';
 import { useAppSelector } from '../../utils/constants';
 import { useNavigate } from 'react-router-dom';
 import { selectTopicList } from './topicsSlice';
+import { handleEnter } from '../../utils/functions';
 
 const Topics = () => {
   const topics = useAppSelector(selectTopicList);
@@ -13,6 +14,7 @@ const Topics = () => {
   const list = topics.map((topic) => (
     <tr
       onClick={() => onSelect(topic.name)}
+      onKeyDown={(e) => handleEnter(e, () => onSelect(topic.name))}
       tabIndex={0}
       key={topic.id}
       id={`topic-${topic.id}`}
