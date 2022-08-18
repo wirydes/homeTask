@@ -21,6 +21,9 @@
 
 ### Now we can run the app with the command "npm run start"
 
+    sometimes i notice that the github api returns a 502 not pretty sure if
+    it was my connection but i'm pretty sure that the app works i mean i unit and manual tested
+
 ### Now we can run test the app with the command "npm run test"
 
 ### future updates
