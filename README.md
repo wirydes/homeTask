@@ -22,3 +22,12 @@
 ### Now we can run the app with the command "npm run start"
 
 ### Now we can run test the app with the command "npm run test"
+
+### future updates
+
+    - add more unit test
+    - add a navbar
+    - add new pages to dig more into the querys
+    - add more querys to fetch info from github/graphql
+    - add some styles to improve the look
+    - add a toast or modal to display errors
