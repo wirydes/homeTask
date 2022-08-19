@@ -1,27 +1,25 @@
-import axios from 'axios';
+import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 
-const instance = axios.create({
-  baseURL: `${process.env.REACT_APP_BASE_URL}`,
-  headers: {
-    'Content-Type': 'applicaiton/json',
-    Authorization: `token ${process.env.REACT_APP_GRAPHQL_TOKEN}`,
-  },
+const httpLink = createHttpLink({
+  uri: `${process.env.REACT_APP_BASE_URL}`,
 });
 
-instance.interceptors.response.use(
-  function (response) {
-    if (response.data.errors) {
-      const error = response.data.errors
-        .map((error) => error.message)
-        .join(' ');
-      return { error };
-    }
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const token = process.env.REACT_APP_GRAPHQL_TOKEN;
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `token ${token}` : '',
+    },
+  };
+});
 
-    return response.data;
-  },
-  function (error) {
-    return Promise.reject(error);
-  }
-);
+const client = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache(),
+});
 
-export default instance;
+export default client;

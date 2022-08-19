@@ -1,41 +1,21 @@
 export const queries = {
-  getTopics: (
-    name,
-    relatedTopics = 3,
-    topicRelated = 3,
-    repositories = 3
-  ) => `{ 
+  getTopics: (name) => `{ 
         topic(name: "${name}") {
           id,
           name,
           stargazerCount,
-          relatedTopics(first: ${relatedTopics}) {
+          relatedTopics(first: 10) {
             id,
             name,
-            relatedTopics(first: ${topicRelated}) {
-              id,
-              name,
-              stargazerCount
-            },
             stargazerCount
           },
           stargazers(first: 10) {
-            edges {
-              node {
-                id,
-                avatarUrl
-              }
-            }
-          },
-          repositories(first: ${repositories} orderBy:{ field: CREATED_AT, direction: DESC }) {
-              edges {
-                node {
-                  id,
-                  name
-                }
-              }
+            nodes {
+              id,
+              avatarUrl
             }
           }
+        }
       }`,
   getTopic: (name, relatedTopics = 10) => `{
         topic(name: "${name}") {
