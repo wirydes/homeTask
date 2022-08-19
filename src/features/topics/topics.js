@@ -22,7 +22,6 @@ const Topics = () => {
       <td tabIndex={0} aria-label={topic.name}>
         {topic.name}
       </td>
-      <td tabIndex={0}>{topic.relatedTopics.length}</td>
       <td tabIndex={0}>{topic.stargazerCount}</td>
     </tr>
   ));
@@ -35,7 +34,6 @@ const Topics = () => {
           <thead>
             <tr>
               <th tabIndex={0}>Name</th>
-              <th tabIndex={0}>Inner topics</th>
               <th tabIndex={0}>StargazerCount</th>
             </tr>
           </thead>

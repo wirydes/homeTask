@@ -1,11 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../utils/constants';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getTopic, onSelectTopic } from './topicsSlice';
+import Input from '../../shared/input';
 
 const SelectedTopic = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
+
+  const clearTopic = () => dispatch(onSelectTopic({ topic: null }));
+  const navigate = useNavigate();
+  const onSelect = (name) => {
+    clearTopic();
+    navigate(`/topic/${name}`, { replace: false });
+  };
+
+  const [filter, setFilter] = useState('');
 
   const topic = useAppSelector((state) => state.topics.selectedTopic);
   const updateTopic = (signal) => {
@@ -21,7 +31,7 @@ const SelectedTopic = () => {
 
   useEffect(() => {
     return () => {
-      dispatch(onSelectTopic({ topic: null }));
+      clearTopic();
     };
   }, []);
 
@@ -31,12 +41,17 @@ const SelectedTopic = () => {
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [id, filter]);
 
   const list = () =>
     topic
       ? topic.relatedTopics.map((topic, i) => (
-          <tr tabIndex={0} key={topic.id} id={`topic-${topic.id}`}>
+          <tr
+            onClick={() => onSelect(topic.name)}
+            tabIndex={0}
+            key={topic.id}
+            id={`topic-${topic.id}`}
+          >
             <td tabIndex={0} aria-label={topic.name}>
               {topic.name}
             </td>
@@ -75,6 +90,13 @@ const SelectedTopic = () => {
           Topic: {topic.name}
           <br />
           Stargazer Count: {topic.stargazerCount}
+          <form>
+            <Input
+              label='Search: '
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+            />
+          </form>
           <div style={{ display: 'flex', justifyContent: 'space-around' }}>
             <h2>Related topics</h2>
             <h2>Stargazers</h2>
