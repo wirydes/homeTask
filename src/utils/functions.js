@@ -1,6 +1,11 @@
 export const handleEnter = (e, fn) => {
-  e.preventDefault();
   if (e.key === 'Enter') {
+    fn();
+  }
+};
+
+export const handleComma = (e, fn) => {
+  if (e.key === ',') {
     fn();
   }
 };

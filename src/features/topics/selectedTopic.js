@@ -1,48 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../utils/constants';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getTopic, onSelectTopic } from './topicsSlice';
-import { selectSearch } from '../filter/filterSlice';
-import Input from '../../shared/input';
+import React from 'react';
+import { useQuery } from '@apollo/client';
+import { useAppSelector } from '../../utils/constants';
+import { getReactTopic } from './topicsApi';
+import {
+  //selectSearchName,
+  selectSearchStargarzer,
+  selectSearchTopics,
+} from '../filter/filterSlice';
+import P from '../../shared/p';
 
-const SelectedTopic = () => {
-  const { id } = useParams();
-  const dispatch = useAppDispatch();
+const SelectedTopic = ({ selected, onSelect }) => {
+  const searchStargarzers = useAppSelector(selectSearchStargarzer);
+  const searchTopics = useAppSelector(selectSearchTopics);
 
-  const clearTopic = () => dispatch(onSelectTopic({ topic: null }));
-  const navigate = useNavigate();
-  const onSelect = (name) => {
-    clearTopic();
-    navigate(`/topic/${name}`, { replace: false });
-  };
+  const { loading, error, data } = useQuery(
+    getReactTopic(selected, {
+      name: selected,
+      stargazers: searchStargarzers,
+      topics: searchTopics,
+    })
+  );
 
-  const [filter, setFilter] = useState('');
-
-  const topic = useAppSelector((state) => state.topics.selectedTopic);
-  const searchFilter = useAppSelector(selectSearch);
-  const updateTopic = (signal) => {
-    dispatch(
-      getTopic({
-        signal: signal,
-        name: id,
-        customQuery: searchFilter,
-      })
-    );
-  };
-
-  useEffect(() => {
-    return () => {
-      clearTopic();
-    };
-  }, []);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    updateTopic(controller.signal);
-    return () => {
-      controller.abort();
-    };
-  }, [id, searchFilter]);
+  const topic = data ? data.topic : null;
 
   const list = () =>
     topic
@@ -62,20 +41,24 @@ const SelectedTopic = () => {
       : [];
   const stargazers = () =>
     topic
-      ? topic.stargazers.map((stargazer, i) => (
-          <tr tabIndex={0} key={stargazer.id} id={`topic-${stargazer.id}`}>
-            <td tabIndex={0} aria-label={stargazer.name}>
-              {stargazer.name}
+      ? topic.stargazers.edges.map((stargazer, i) => (
+          <tr
+            tabIndex={0}
+            key={stargazer.node.id}
+            id={`topic-${stargazer.node.id}`}
+          >
+            <td tabIndex={0} aria-label={stargazer.node.name}>
+              {stargazer.node.name}
             </td>
-            <td tabIndex={0} aria-label={stargazer.email}>
-              {topic.email}
+            <td tabIndex={0} aria-label={stargazer.node.email}>
+              {stargazer.node.email}
             </td>
             <td tabIndex={0}>
               <img
                 width={50}
                 height={50}
-                src={stargazer.avatarUrl}
-                alt={stargazer.name}
+                src={stargazer.node.avatarUrl}
+                alt={stargazer.node.name}
               />
             </td>
           </tr>
@@ -84,20 +67,14 @@ const SelectedTopic = () => {
   return (
     <>
       <h1>Selected Topic</h1>
-      <Link to='/'>Back home</Link>
-      {topic === undefined && <div>Loading...</div>}
-      {!!topic && (
+      <button onClick={() => onSelect('')}>Back</button>
+      {loading && <P>Loading...</P>}
+      {error && <P>Error: {error.message}</P>}
+      {!loading && !error && (
         <div style={{ textAlign: 'center' }}>
           Topic: {topic.name}
           <br />
           Stargazer Count: {topic.stargazerCount}
-          <form>
-            <Input
-              label='Search: '
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-            />
-          </form>
           <div style={{ display: 'flex', justifyContent: 'space-around' }}>
             <h2>Related topics</h2>
             <h2>Stargazers</h2>

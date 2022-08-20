@@ -2,7 +2,10 @@ import { gql } from '@apollo/client';
 import client from '../../services/client';
 import { queries } from './queries.js';
 
-export function getReactTopics(signal, customQuery = '') {
+export function getReactTopics(
+  signal,
+  customQuery = { name: '', stargazers: 3, topics: 3 }
+) {
   const query = queries.getTopics('react', customQuery);
   return client.query({
     query: gql`
@@ -11,11 +14,12 @@ export function getReactTopics(signal, customQuery = '') {
   });
 }
 
-export function getReactTopic(signal, name, customQuery = '') {
+export function getReactTopic(
+  name,
+  customQuery = { name: '', stargazers: 3, topics: 3 }
+) {
   const query = queries.getTopic(name, customQuery);
-  return client.query({
-    query: gql`
-      ${query}
-    `,
-  });
+  return gql`
+    ${query}
+  `;
 }

@@ -1,7 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const initialState = {
-  search: '',
+  name: '',
+  topics: '',
+  stargarzer: '',
 };
 
 export const filterSlice = createSlice({
@@ -9,17 +11,49 @@ export const filterSlice = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
+    onSelectName: (state, action) => {
+      const { payload } = action;
+      state.name = payload;
+    },
     onUpdateSearch: (state, action) => {
-      state.search = action.payload;
+      const { payload } = action;
+      if (!state.name) {
+        state.name = payload;
+        return;
+      }
+      if (!state.topics) {
+        state.topics = payload;
+        return;
+      }
+      if (!state.stargarzer) {
+        state.stargarzer = payload;
+        return;
+      }
+    },
+    onClearParam: (state, action) => {
+      const { payload } = action;
+      const empty = '';
+      if (payload === 'name') {
+        state.name = empty;
+        return;
+      }
+      if (payload === 'topics') {
+        state.topics = empty;
+        return;
+      }
+      if (payload === 'stargarzer') {
+        state.stargarzer = empty;
+        return;
+      }
     },
   },
 });
 
-export const { onUpdateSearch } = filterSlice.actions;
+export const { onUpdateSearch, onClearParam, onSelectName } =
+  filterSlice.actions;
 
-// The function below is called a selector and allows us to select a value from
-// the state. Selectors can also be defined inline where they're used instead of
-// in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
-export const selectSearch = (state) => state.filter.search;
+export const selectSearchName = (state) => state.filter.name;
+export const selectSearchTopics = (state) => state.filter.topics;
+export const selectSearchStargarzer = (state) => state.filter.stargarzer;
 
 export default filterSlice.reducer;

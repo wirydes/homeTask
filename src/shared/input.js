@@ -10,20 +10,21 @@ const InfoP = styled.p`
   white-space: pre-line;
 `;
 
-const WrappedInput = (props) => {
-  const infoPId = `info-${props.id}`;
+const WrappedInput = ({ id, label, value, onChange, onKeyDown, info }) => {
+  const infoPId = `info-${id}`;
   return (
     <Fieldset>
-      <Label htmlFor={props.id}>{props.label}</Label>
+      <Label htmlFor={id}>{label}</Label>
       <Input
-        id={props.id}
-        defaultValue={props.value}
-        onChange={props.onChange}
+        id={id}
+        value={value}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
         aria-describedby={`${infoPId}`}
       />
-      {props.info ? (
+      {info ? (
         <InfoP id={infoPId} aria-live='polite'>
-          {props.info}
+          {info}
         </InfoP>
       ) : null}
     </Fieldset>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../utils/constants';
 import {
   getTopics,
@@ -6,28 +6,42 @@ import {
   selectErrorMessage,
   selectStagazerCount,
 } from './topicsSlice';
-import { selectSearch } from '../filter/filterSlice';
+import {
+  selectSearchName,
+  selectSearchStargarzer,
+  selectSearchTopics,
+} from '../filter/filterSlice';
 import Topics from './topics';
 import { apiCallStatus } from '../../utils/constants';
 
 const ReactTopic = () => {
   const dispatch = useAppDispatch();
 
+  const [selected, setSelected] = useState('');
   const stargazerCount = useAppSelector(selectStagazerCount);
   const status = useAppSelector(selectTopicStatus);
   const error = useAppSelector(selectErrorMessage);
-  const search = useAppSelector(selectSearch);
+  const searchName = useAppSelector(selectSearchName);
+  const searchStargarzers = useAppSelector(selectSearchStargarzer);
+  const searchTopics = useAppSelector(selectSearchTopics);
 
-  const updateTopics = (signal) => {
-    if (status !== apiCallStatus.loading) {
-      dispatch(
-        getTopics({
-          signal: signal,
-          customQuery: search,
-        })
-      );
-    }
-  };
+  const updateTopics = useCallback(
+    (signal) => {
+      if (status !== apiCallStatus.loading) {
+        dispatch(
+          getTopics({
+            signal: signal,
+            customQuery: {
+              name: searchName,
+              stargarzers: searchStargarzers,
+              topics: searchTopics,
+            },
+          })
+        );
+      }
+    },
+    [searchName, searchStargarzers, searchTopics]
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -36,12 +50,11 @@ const ReactTopic = () => {
     return () => {
       controller.abort();
     };
-  }, [search]);
+  }, [updateTopics]);
 
   const isLoading = status === 'loading';
   const getTitle = () => {
-    const [name, ...rest] = search.split(',');
-    return name ? name : 'React';
+    return searchName ? searchName : 'React';
   };
   const title = getTitle();
   return (
@@ -54,7 +67,7 @@ const ReactTopic = () => {
           <div aria-label='Stargazer Count' style={{ textAlign: 'center' }}>
             Stargazer Count: {stargazerCount}
           </div>
-          <Topics />
+          <Topics selected={selected} onChangeSelected={setSelected} />
         </>
       )}
       {!!error && <div aria-live='polite'>{error}</div>}

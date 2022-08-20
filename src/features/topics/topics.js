@@ -1,14 +1,17 @@
 import React from 'react';
-import { useAppSelector } from '../../utils/constants';
-import { useNavigate } from 'react-router-dom';
+import SelectedTopic from './selectedTopic';
+import { useAppDispatch, useAppSelector } from '../../utils/constants';
 import { selectTopicList } from './topicsSlice';
 import { handleEnter } from '../../utils/functions';
+import { onSelectName } from '../filter/filterSlice';
 
-const Topics = () => {
+const Topics = ({ selected, onChangeSelected }) => {
+  const dispatch = useAppDispatch();
   const topics = useAppSelector(selectTopicList);
-  const navigate = useNavigate();
+
   const onSelect = (name) => {
-    navigate(`/topic/${name}`, { replace: false });
+    dispatch(onSelectName(name));
+    onChangeSelected(name);
   };
 
   const list = topics.map((topic) => (
@@ -28,18 +31,23 @@ const Topics = () => {
 
   return (
     <>
-      <h2>Topics</h2>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <table>
-          <thead>
-            <tr>
-              <th tabIndex={0}>Name</th>
-              <th tabIndex={0}>StargazerCount</th>
-            </tr>
-          </thead>
-          <tbody>{list}</tbody>
-        </table>
-      </div>
+      {!selected && (
+        <>
+          <h2>Topics</h2>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <table>
+              <thead>
+                <tr>
+                  <th tabIndex={0}>Name</th>
+                  <th tabIndex={0}>StargazerCount</th>
+                </tr>
+              </thead>
+              <tbody>{list}</tbody>
+            </table>
+          </div>
+        </>
+      )}
+      {selected && <SelectedTopic selected={selected} onSelect={onSelect} />}
     </>
   );
 };
