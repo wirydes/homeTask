@@ -6,6 +6,9 @@ const P = styled.p`
     props.background ? props.background : 'transparent'};
   font-size: ${(props) => (props.fontSize ? props.fontSize : '1em')};
   border: ${(props) => (props.border ? props.border : 'none')};
+  &:hover {
+    ${(props) => (props.hover ? props.hover : '')}
+  }
 `;
 
 export default P;

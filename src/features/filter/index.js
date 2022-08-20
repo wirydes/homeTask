@@ -25,7 +25,8 @@ const Search = () => {
   };
 
   const pStyle = {
-    border: '1px solid',
+    borderWidth: 'thin',
+    borderStyle: 'solid',
     borderRadius: '5%',
     cursor: 'pointer',
     marginRight: '5px',
@@ -44,12 +45,20 @@ const Search = () => {
     <>
       <Div isFlex>
         {name ? (
-          <P onClick={() => dispatch(onClearParam('name'))} style={pStyle}>
+          <P
+            onClick={() => dispatch(onClearParam('name'))}
+            style={pStyle}
+            hover='border-color: red;'
+          >
             Name: {name}
           </P>
         ) : null}
         {topics ? (
-          <P onClick={() => dispatch(onClearParam('topics'))} style={pStyle}>
+          <P
+            onClick={() => dispatch(onClearParam('topics'))}
+            style={pStyle}
+            hover='border-color: red;'
+          >
             topics: {topics}
           </P>
         ) : null}
@@ -57,6 +66,7 @@ const Search = () => {
           <P
             onClick={() => dispatch(onClearParam('stargarzer'))}
             style={pStyle}
+            hover='border-color: red;'
           >
             stargarzer: {stargarzer}
           </P>
