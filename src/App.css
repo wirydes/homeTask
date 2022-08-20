@@ -41,3 +41,19 @@
 tr:hover {
   cursor: pointer;
 }
+
+.chip {
+  display: inline-block;
+  padding: 0 25px;
+  height: 50px;
+  font-size: 16px;
+  line-height: 50px;
+  border-radius: 25px;
+  background-color: #f1f1f1;
+}
+
+.chip:hover {
+  background-color: #0d6efd;
+  color: white;
+  cursor: pointer;
+}

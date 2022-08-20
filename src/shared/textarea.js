@@ -4,30 +4,28 @@ const InfoP = styled.p`
   white-space: pre-line;
 `;
 
-const WrappedInput = ({
+const WrappedTextArea = ({
   id,
   label,
   value,
-  placeholder = '',
   onChange = (e) => {},
   onKeyDown = (e) => {},
   info,
 }) => {
   const infoPId = `info-${id}`;
   return (
-    <div className='form-floating col-auto'>
-      <input
+    <div className='col-auto'>
+      <label className='form-label' htmlFor={id}>
+        {label}
+      </label>
+      <textarea
         className='form-control'
         id={id}
         value={value}
         onChange={onChange}
         onKeyDown={onKeyDown}
-        placeholder={placeholder}
         aria-describedby={`${infoPId}`}
       />
-      <label className='' htmlFor={id}>
-        {label}
-      </label>
 
       {info ? (
         <InfoP id={infoPId} aria-live='polite'>
@@ -38,4 +36,4 @@ const WrappedInput = ({
   );
 };
 
-export default WrappedInput;
+export default WrappedTextArea;

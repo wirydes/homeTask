@@ -7,6 +7,7 @@ const P = styled.p`
   font-size: ${(props) => (props.fontSize ? props.fontSize : '1em')};
   border: ${(props) => (props.border ? props.border : 'none')};
   &:hover {
+    color: white;
     ${(props) => (props.hover ? props.hover : '')}
   }
 `;
