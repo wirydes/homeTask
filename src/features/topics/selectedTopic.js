@@ -66,7 +66,7 @@ const SelectedTopic = ({ selected, onSelect }) => {
       : [];
   return (
     <>
-      <h1>Selected Topic</h1>
+      <h2 className='h2'>Selected Topic</h2>
       <button onClick={() => onSelect('')}>Back</button>
       {loading && <P>Loading...</P>}
       {error && <P>Error: {error.message}</P>}
@@ -81,7 +81,10 @@ const SelectedTopic = ({ selected, onSelect }) => {
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-around' }}>
             <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-              <table id='related-topics-table'>
+              <table
+                className='table table-striped table-hover'
+                id='related-topics-table'
+              >
                 <thead>
                   <tr>
                     <th tabIndex={0}>Name</th>
@@ -93,7 +96,10 @@ const SelectedTopic = ({ selected, onSelect }) => {
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <table id='stargarzers-table'>
+              <table
+                className='table table-striped table-hover'
+                id='stargarzers-table'
+              >
                 <thead>
                   <tr>
                     <th tabIndex={0}>Name</th>

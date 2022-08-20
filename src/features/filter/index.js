@@ -1,36 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   onUpdateSearch,
   selectSearchName,
   selectSearchStargarzer,
   selectSearchTopics,
   onClearParam,
+  onUpdateQuery,
+  reset,
 } from './filterSlice';
+import { resetCustom } from '../topics/topicsSlice';
 import { useAppDispatch, useAppSelector } from '../../utils/constants';
 import Input from '../../shared/input';
+import TextArea from '../../shared/textarea';
 import P from '../../shared/p';
 import { handleComma, handleEnter } from '../../utils/functions';
 import Div from '../../shared/div';
+import Chip from '../../shared/chip';
 const Search = () => {
   const dispatch = useAppDispatch();
   const name = useAppSelector(selectSearchName);
   const stargarzer = useAppSelector(selectSearchStargarzer);
   const topics = useAppSelector(selectSearchTopics);
+  const [query, setQuery] = useState('');
   const [text, setText] = useState('');
+  const [isDev, setIsDev] = useState(false);
+
   const info =
     'search rules: \n-params order: [\n \t"topic name",\n \t "number of related topics",\n \t "number of stargazers"\n].\n-set params using "," or "enter".';
+
   const onChange = (e) => {
     e.preventDefault();
     setText(e.target.value);
   };
 
-  const pStyle = {
-    borderWidth: 'thin',
-    borderStyle: 'solid',
-    borderRadius: '5%',
-    cursor: 'pointer',
-    marginRight: '5px',
+  const queryChange = (e) => {
+    e.preventDefault();
+    setQuery(e.target.value);
   };
+
   const onSuccess = (e, value) => {
     e.preventDefault();
     setText('');
@@ -41,45 +48,86 @@ const Search = () => {
     handleEnter(e, () => onSuccess(e, text));
     handleComma(e, () => onSuccess(e, text));
   };
+
+  const onSearchWithQuery = () => {
+    dispatch(onUpdateQuery(query));
+    setQuery('');
+  };
+
+  const updateStatus = () => setIsDev(!isDev);
+
+  useEffect(() => {
+    dispatch(reset());
+    dispatch(resetCustom());
+  }, [isDev]);
+
   return (
     <>
-      <Div isFlex>
+      <Div isFlex marginBottom='15px'>
         {name ? (
-          <P
+          <Chip
             onClick={() => dispatch(onClearParam('name'))}
-            style={pStyle}
-            hover='border-color: red;'
-          >
-            Name: {name}
-          </P>
+            control='Name'
+            text={name}
+          />
         ) : null}
         {topics ? (
-          <P
+          <Chip
             onClick={() => dispatch(onClearParam('topics'))}
-            style={pStyle}
-            hover='border-color: red;'
-          >
-            topics: {topics}
-          </P>
+            control='Topics'
+            text={topics}
+          />
         ) : null}
         {stargarzer ? (
-          <P
+          <Chip
             onClick={() => dispatch(onClearParam('stargarzer'))}
-            style={pStyle}
-            hover='border-color: red;'
-          >
-            stargarzer: {stargarzer}
-          </P>
+            control='Stargarzer'
+            text={stargarzer}
+          />
         ) : null}
       </Div>
-      <Input
-        id='searchQuery'
-        label='Search: '
-        value={text}
-        onChange={onChange}
-        onKeyDown={handleKeyDown}
-        info={info}
-      />
+      <Div isFlex alignItems='flex-start' className='row'>
+        {!isDev && (
+          <Input
+            id='searchQuery'
+            label='Search: '
+            value={text}
+            placeholder='search...'
+            onChange={onChange}
+            onKeyDown={handleKeyDown}
+            info={info}
+          />
+        )}
+        {isDev && (
+          <TextArea
+            id='searchQuery'
+            label='Query: '
+            value={query}
+            onChange={queryChange}
+            info='hope you know what you are doing!'
+          />
+        )}
+
+        <div className='col-auto' style={{ border: 'none' }}>
+          <button
+            className={`btn ${isDev ? 'btn-secondary' : 'btn-primary'}`}
+            onClick={updateStatus}
+          >
+            switch mode
+          </button>
+        </div>
+
+        {isDev && (
+          <div className='col-auto' style={{ border: 'none' }}>
+            <button
+              className='btn btn-primary'
+              onClick={() => onSearchWithQuery()}
+            >
+              subtmit query
+            </button>
+          </div>
+        )}
+      </Div>
     </>
   );
 };

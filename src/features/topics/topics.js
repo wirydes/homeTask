@@ -33,9 +33,16 @@ const Topics = ({ selected, onChangeSelected }) => {
     <>
       {!selected && (
         <>
-          <h2>Topics</h2>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <table>
+          <h2 className='h2'>Topics</h2>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginLeft: '25%',
+              marginRight: '25%',
+            }}
+          >
+            <table className='table table-striped table-hover'>
               <thead>
                 <tr>
                   <th tabIndex={0}>Name</th>

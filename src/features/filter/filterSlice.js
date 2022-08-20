@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const initialState = {
+  query: '',
   name: '',
   topics: '',
   stargarzer: '',
@@ -11,6 +12,16 @@ export const filterSlice = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
+    reset: (state, action) => {
+      state.query = '';
+      state.name = '';
+      state.topics = '';
+      state.stargarzer = '';
+    },
+    onUpdateQuery: (state, action) => {
+      const { payload } = action;
+      state.query = payload;
+    },
     onSelectName: (state, action) => {
       const { payload } = action;
       state.name = payload;
@@ -49,11 +60,17 @@ export const filterSlice = createSlice({
   },
 });
 
-export const { onUpdateSearch, onClearParam, onSelectName } =
-  filterSlice.actions;
+export const {
+  onUpdateSearch,
+  onClearParam,
+  onSelectName,
+  onUpdateQuery,
+  reset,
+} = filterSlice.actions;
 
 export const selectSearchName = (state) => state.filter.name;
 export const selectSearchTopics = (state) => state.filter.topics;
 export const selectSearchStargarzer = (state) => state.filter.stargarzer;
+export const selectQuery = (state) => state.filter.query;
 
 export default filterSlice.reducer;

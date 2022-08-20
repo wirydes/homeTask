@@ -14,9 +14,9 @@ const getQueryParams = (
   };
 };
 export const queries = {
-  getTopics: (name, customQuery = { name: '', stargazers: '', topics: '' }) => {
+  getTopics: (name, paramsQuery = { name: '', stargazers: 0, topics: 0 }) => {
     const { search, relateds, customStargarzer } = getQueryParams(
-      customQuery,
+      paramsQuery,
       name
     );
     return `{ 
@@ -38,9 +38,9 @@ export const queries = {
         }
       }`;
   },
-  getTopic: (name, customQuery) => {
+  getTopic: (name, paramsQuery) => {
     const { search, relateds, customStargarzer } = getQueryParams(
-      customQuery,
+      paramsQuery,
       name
     );
     return `{
