@@ -8,6 +8,7 @@ import './index.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ReactTopic from './features/topics/index';
 import SelectedTopic from './features/topics/selectedTopic';
+import Search from './features/filter';
 const container = document.getElementById('root');
 const root = createRoot(container);
 
@@ -20,6 +21,7 @@ root.render(
             path='/'
             element={
               <App>
+                <Search />
                 <ReactTopic />
               </App>
             }
@@ -29,6 +31,7 @@ root.render(
             path='/topic/:id'
             element={
               <App>
+                <Search />
                 <SelectedTopic />
               </App>
             }
