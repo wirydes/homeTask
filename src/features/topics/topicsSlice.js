@@ -77,7 +77,7 @@ export const topicsSlice = createSlice({
           const { topic } = { ...action.payload };
           state.selectedTopic = {
             ...topic,
-            stargazers: topic.stargazers.edges.map((item) => item.nodes),
+            stargazers: topic.stargazers.edges.map((item) => item.node),
           };
           state.errorMessage = '';
         }
