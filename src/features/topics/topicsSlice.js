@@ -13,8 +13,8 @@ export const initialState = {
 // The function below is called a thunk and allows us to perform async logic.
 export const getTopics = createAsyncThunk(
   'topics/fetch',
-  async ({ signal }) => {
-    const { data, error } = await getReactTopics(signal);
+  async ({ signal, customQuery = '' }) => {
+    const { data, error } = await getReactTopics(signal, customQuery);
     // The value we return becomes the `fulfilled` action payload
 
     const isError = !!error;
@@ -23,8 +23,8 @@ export const getTopics = createAsyncThunk(
 );
 export const getTopic = createAsyncThunk(
   'topic/fetch',
-  async ({ signal, name, relatedTopics = 10 }) => {
-    const { data, error } = await getReactTopic(signal, name, relatedTopics);
+  async ({ signal, name, customQuery = '' }) => {
+    const { data, error } = await getReactTopic(signal, name, customQuery);
     const isError = !!error;
     return isError ? { isError, error } : { isError, topic: data.topic };
   }
@@ -54,7 +54,12 @@ export const topicsSlice = createSlice({
           const { topic } = { ...action.payload };
           state.errorMessage = '';
           state.stargazerCount = topic.stargazerCount;
-          state.relatedTopics = [...topic.relatedTopics];
+          state.relatedTopics = [
+            ...topic.relatedTopics.map((item) => ({
+              ...item,
+              stargazers: item.stargazers.nodes.map((inner) => inner),
+            })),
+          ];
         }
       })
       .addCase(getTopics.rejected, (state, action) => {
@@ -72,7 +77,7 @@ export const topicsSlice = createSlice({
           const { topic } = { ...action.payload };
           state.selectedTopic = {
             ...topic,
-            stargazers: topic.stargazers.edges.map((item) => item.node),
+            stargazers: topic.stargazers.edges.map((item) => item.nodes),
           };
           state.errorMessage = '';
         }

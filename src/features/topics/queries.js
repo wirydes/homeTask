@@ -1,33 +1,56 @@
+const getQueryParams = (customQuery = '', name) => {
+  const [customName, relateds, stargarzers, ...rest] = customQuery.split(',');
+  const search = customName ? customName : name;
+  const topics = relateds ? relateds : 10;
+  const customStargarzer = stargarzers ? stargarzers : 10;
+
+  return {
+    search,
+    topics,
+    customStargarzer,
+  };
+};
 export const queries = {
-  getTopics: (name) => `{ 
-        topic(name: "${name}") {
+  getTopics: (name, customQuery = '') => {
+    const { search, topics, customStargarzer } = getQueryParams(
+      customQuery,
+      name
+    );
+    return `{ 
+        topic(name: "${search}") {
           id,
           name,
           stargazerCount,
-          relatedTopics(first: 10) {
+          relatedTopics(first: ${topics}) {
             id,
             name,
-            stargazerCount
-          },
-          stargazers(first: 10) {
-            nodes {
-              id,
-              avatarUrl
+            stargazerCount,
+            stargazers(first: ${customStargarzer}) {
+              nodes {
+                id,
+                avatarUrl
+              }
             }
-          }
+          },
         }
-      }`,
-  getTopic: (name, relatedTopics = 10) => `{
-        topic(name: "${name}") {
+      }`;
+  },
+  getTopic: (name, customQuery) => {
+    const { search, topics, customStargarzer } = getQueryParams(
+      customQuery,
+      name
+    );
+    return `{
+        topic(name: "${search}") {
           id,
           name,
           stargazerCount,
-          relatedTopics(first: ${relatedTopics}) {
+          relatedTopics(first: ${topics}) {
             id,
             name,
             stargazerCount
           },
-          stargazers(first: 10) {
+          stargazers(first: ${customStargarzer}) {
             edges {
               node {
                 id,
@@ -38,5 +61,6 @@ export const queries = {
             }
           },
         }
-      }`,
+      }`;
+  },
 };

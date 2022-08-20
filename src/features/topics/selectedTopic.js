@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../utils/constants';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getTopic, onSelectTopic } from './topicsSlice';
+import { selectSearch } from '../filter/filterSlice';
 import Input from '../../shared/input';
 
 const SelectedTopic = () => {
@@ -18,15 +19,15 @@ const SelectedTopic = () => {
   const [filter, setFilter] = useState('');
 
   const topic = useAppSelector((state) => state.topics.selectedTopic);
+  const searchFilter = useAppSelector(selectSearch);
   const updateTopic = (signal) => {
-    if (topic === null) {
-      dispatch(
-        getTopic({
-          signal: signal,
-          name: id,
-        })
-      );
-    }
+    dispatch(
+      getTopic({
+        signal: signal,
+        name: id,
+        customQuery: searchFilter,
+      })
+    );
   };
 
   useEffect(() => {
@@ -41,7 +42,7 @@ const SelectedTopic = () => {
     return () => {
       controller.abort();
     };
-  }, [id, filter]);
+  }, [id, searchFilter]);
 
   const list = () =>
     topic
