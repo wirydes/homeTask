@@ -15,7 +15,7 @@ export function getReactTopics({
     });
   }
 
-  const query = queries.getTopics();
+  const query = queries.GET_TOPICS;
   const { name, stargazers, topics } = paramsQuery;
   const variables = {
     name: name ? name : 'react',
@@ -35,5 +35,5 @@ export function getReactTopic(customQuery = '') {
     `;
   }
 
-  return queries.getTopic();
+  return queries.GET_TOPIC;
 }

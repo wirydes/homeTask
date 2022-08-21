@@ -297,7 +297,7 @@ describe('Render Topics component', () => {
         mocks={[
           {
             request: {
-              query: queries.getTopics(),
+              query: queries.GET_TOPICS,
               variables: {
                 name: 'angular',
                 stargazers: 3,
