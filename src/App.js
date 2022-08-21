@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Search from './features/filter/components/index';
 
 function App({ children }) {
   return (
@@ -8,7 +9,7 @@ function App({ children }) {
       <header>
         <img src={logo} className='App-logo' alt='logo' />
       </header>
-
+      <Search />
       {children}
     </div>
   );
