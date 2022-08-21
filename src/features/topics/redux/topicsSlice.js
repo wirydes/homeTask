@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getReactTopics } from './topicsApi';
-import { apiCallStatus } from '../../utils/constants';
+import { getReactTopics } from '../services/topicsApi';
+import { apiCallStatus } from '../../../utils/constants';
 
 export const initialState = {
   relatedTopics: [],

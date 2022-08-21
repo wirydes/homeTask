@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import client from '../../services/client';
+import client from '../../../services/client';
 import { queries } from './queries.js';
 
 export function getReactTopics({

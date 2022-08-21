@@ -7,9 +7,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import ReactTopic from './features/topics/index';
-import SelectedTopic from './features/topics/selectedTopic';
-import Search from './features/filter';
+import ReactTopic from './features/topics/components/index';
+import Search from './features/filter/components/index';
 import client from './services/client';
 const container = document.getElementById('root');
 const root = createRoot(container);
@@ -26,16 +25,6 @@ root.render(
                 <App>
                   <Search />
                   <ReactTopic />
-                </App>
-              }
-            />
-
-            <Route
-              path='/topic/:id'
-              element={
-                <App>
-                  <Search />
-                  <SelectedTopic />
                 </App>
               }
             />

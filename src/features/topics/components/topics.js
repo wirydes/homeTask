@@ -1,9 +1,9 @@
 import React from 'react';
 import SelectedTopic from './selectedTopic';
-import { useAppDispatch, useAppSelector } from '../../utils/constants';
-import { selectTopicList } from './topicsSlice';
-import { handleEnter } from '../../utils/functions';
-import { onSelectName } from '../filter/filterSlice';
+import { useAppDispatch, useAppSelector } from '../../../utils/constants';
+import { selectTopicList } from '../redux/topicsSlice';
+import { handleEnter } from '../../../utils/functions';
+import { onSelectName } from '../../filter/redux/filterSlice';
 
 const Topics = ({ selected, onChangeSelected }) => {
   const dispatch = useAppDispatch();

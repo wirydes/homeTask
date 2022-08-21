@@ -7,15 +7,15 @@ import {
   onClearParam,
   onUpdateQuery,
   reset,
-} from './filterSlice';
-import { resetCustom } from '../topics/topicsSlice';
-import { useAppDispatch, useAppSelector } from '../../utils/constants';
-import Input from '../../shared/input';
-import TextArea from '../../shared/textarea';
-import P from '../../shared/p';
-import { handleComma, handleEnter } from '../../utils/functions';
-import Div from '../../shared/div';
-import Chip from '../../shared/chip';
+} from '../redux/filterSlice';
+import { resetCustom } from '../../topics/redux/topicsSlice';
+import { useAppDispatch, useAppSelector } from '../../../utils/constants';
+import Input from '../../../shared/input';
+import TextArea from '../../../shared/textarea';
+import { handleComma, handleEnter } from '../../../utils/functions';
+import Div from '../../../shared/div';
+import Chip from '../../../shared/chip';
+
 const Search = () => {
   const dispatch = useAppDispatch();
   const name = useAppSelector(selectSearchName);
@@ -51,7 +51,6 @@ const Search = () => {
 
   const onSearchWithQuery = () => {
     dispatch(onUpdateQuery(query));
-    setQuery('');
   };
 
   const updateStatus = () => setIsDev(!isDev);

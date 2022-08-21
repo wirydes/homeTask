@@ -1,20 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../utils/constants';
+import { useAppDispatch, useAppSelector } from '../../../utils/constants';
 import {
   getTopics,
   selectTopicStatus,
   selectErrorMessage,
   selectStagazerCount,
   selectCustomTopic,
-} from './topicsSlice';
+} from '../redux/topicsSlice';
 import {
   selectSearchName,
   selectSearchStargarzer,
   selectSearchTopics,
   selectQuery,
-} from '../filter/filterSlice';
+} from '../../filter/redux/filterSlice';
 import Topics from './topics';
-import { apiCallStatus } from '../../utils/constants';
+import { apiCallStatus } from '../../../utils/constants';
 
 const CustomRender = (custom) => {
   let fixed = {};

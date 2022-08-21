@@ -1,13 +1,79 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
-import SelectedTopic from './selectedTopic';
-import { renderWithProviders } from '../../utils/test-utils';
+import { screen, fireEvent } from '@testing-library/react';
+import Topics from '../components/topics';
+import { renderWithProviders } from '../../../utils/test-utils';
 import { BrowserRouter } from 'react-router-dom';
-import { initialState } from './topicsSlice';
-import { initialState as initialFilter } from '../filter/filterSlice';
+import { initialState } from '../redux/topicsSlice';
 import { MockedProvider } from '@apollo/client/testing';
-import { queries } from './queries';
-import wait from 'waait';
+import { queries } from '../services/queries';
+const mockData = [
+  {
+    id: 'MDU6VG9waWNhbmd1bGFy',
+    name: 'angular',
+    relatedTopics: [
+      {
+        id: 'MDU6VG9waWNyZWFjdA==',
+        name: 'react',
+        stargazerCount: 76232,
+      },
+      {
+        id: 'MDU6VG9waWN2dWU=',
+        name: 'vue',
+        stargazerCount: 50073,
+      },
+      {
+        id: 'MDU6VG9waWNpb3M=',
+        name: 'ios',
+        stargazerCount: 30666,
+      },
+    ],
+    stargazerCount: 44923,
+  },
+  {
+    id: 'MDU6VG9waWNyZWFjdC1uYXRpdmU=',
+    name: 'react-native',
+    relatedTopics: [
+      {
+        id: 'MDU6VG9waWNyZWFjdGpz',
+        name: 'reactjs',
+        stargazerCount: 1139,
+      },
+      {
+        id: 'MDU6VG9waWNhcGk=',
+        name: 'api',
+        stargazerCount: 58169,
+      },
+      {
+        id: 'MDU6VG9waWNnb2xhbmc=',
+        name: 'golang',
+        stargazerCount: 1509,
+      },
+    ],
+    stargazerCount: 25698,
+  },
+  {
+    id: 'MDU6VG9waWN2dWU=',
+    name: 'vue',
+    relatedTopics: [
+      {
+        id: 'MDU6VG9waWNhbmd1bGFy',
+        name: 'angular',
+        stargazerCount: 44923,
+      },
+      {
+        id: 'MDU6VG9waWNyZWFjdA==',
+        name: 'react',
+        stargazerCount: 76232,
+      },
+      {
+        id: 'MDU6VG9waWN0eXBlc2NyaXB0',
+        name: 'typescript',
+        stargazerCount: 29122,
+      },
+    ],
+    stargazerCount: 50073,
+  },
+];
 
 const mockSelected = {
   topic: {
@@ -18,19 +84,19 @@ const mockSelected = {
       {
         id: 'MDU6VG9waWNyZWFjdA==',
         name: 'react',
-        stargazerCount: 76402,
+        stargazerCount: 76397,
         __typename: 'Topic',
       },
       {
         id: 'MDU6VG9waWN2dWU=',
         name: 'vue',
-        stargazerCount: 50143,
+        stargazerCount: 50142,
         __typename: 'Topic',
       },
       {
         id: 'MDU6VG9waWNhcGk=',
         name: 'api',
-        stargazerCount: 58320,
+        stargazerCount: 58316,
         __typename: 'Topic',
       },
       {
@@ -42,13 +108,13 @@ const mockSelected = {
       {
         id: 'MDU6VG9waWNsaW51eA==',
         name: 'linux',
-        stargazerCount: 80183,
+        stargazerCount: 80182,
         __typename: 'Topic',
       },
       {
         id: 'MDU6VG9waWNnb2xhbmc=',
         name: 'golang',
-        stargazerCount: 1509,
+        stargazerCount: 1510,
         __typename: 'Topic',
       },
       {
@@ -169,17 +235,74 @@ const mockSelected = {
     __typename: 'Topic',
   },
 };
-const mockVariables = { name: 'angular', stargazers: 10, relateds: 10 };
-describe('Render SelectedTopic component', () => {
+const mockQuery = jest.fn().mockReturnValue({
+  loading: false,
+  error: false,
+  data: mockSelected,
+});
+
+describe('Render Topics component', () => {
   test('basic render', () => {
     const mockEvent = jest.fn();
     renderWithProviders(
+      <BrowserRouter>
+        <Topics selected='' onChangeSelected={mockEvent} />
+      </BrowserRouter>
+    );
+
+    expect(screen.getByText('Topics')).toBeInTheDocument();
+  });
+
+  test('render 3 topics', async () => {
+    const mockEvent = jest.fn();
+    renderWithProviders(
+      <BrowserRouter>
+        <Topics selected='' onChangeSelected={mockEvent} />
+      </BrowserRouter>,
+      {
+        preloadedState: {
+          topics: {
+            ...initialState,
+            relatedTopics: mockData,
+          },
+        },
+      }
+    );
+
+    expect(await screen.findByText('angular')).toBeInTheDocument();
+    expect(await screen.findByText('react-native')).toBeInTheDocument();
+    expect(await screen.findByText('vue')).toBeInTheDocument();
+  });
+
+  test('click on one row', async () => {
+    const mockEvent = jest.fn();
+    const { rerender } = renderWithProviders(
+      <BrowserRouter>
+        <Topics selected='' onChangeSelected={mockEvent} />
+      </BrowserRouter>,
+      {
+        preloadedState: {
+          topics: {
+            ...initialState,
+            relatedTopics: mockData,
+          },
+        },
+      }
+    );
+
+    const rowElement = await screen.findByText('angular');
+    fireEvent.click(rowElement);
+    rerender(
       <MockedProvider
         mocks={[
           {
             request: {
-              query: queries.GET_TOPIC,
-              variables: mockVariables,
+              query: queries.GET_TOPICS,
+              variables: {
+                name: 'angular',
+                stargazers: 3,
+                relateds: 3,
+              },
             },
             result: {
               data: mockSelected,
@@ -189,108 +312,12 @@ describe('Render SelectedTopic component', () => {
         addTypename={false}
       >
         <BrowserRouter>
-          <SelectedTopic onSelect={mockEvent} selected='angular' />
+          <Topics selected='angular' onCfhangeSelected={mockEvent} />
         </BrowserRouter>
       </MockedProvider>
     );
-
-    expect(screen.getByText('Selected Topic')).toBeInTheDocument();
-  });
-
-  test('render loading', async () => {
-    const mockEvent = jest.fn();
-    renderWithProviders(
-      <MockedProvider
-        mocks={[
-          {
-            request: {
-              query: queries.GET_TOPIC,
-              variables: mockVariables,
-            },
-          },
-        ]}
-        addTypename={false}
-      >
-        <BrowserRouter>
-          <SelectedTopic onSelect={mockEvent} selected='angular' />
-        </BrowserRouter>
-      </MockedProvider>,
-      {
-        preloadedState: {
-          topics: {
-            ...initialState,
-          },
-        },
-      }
-    );
-
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
-  });
-
-  test('render error', async () => {
-    const mockEvent = jest.fn();
-    const topicMock = {
-      request: {
-        query: queries.GET_TOPIC,
-        variables: mockVariables,
-      },
-      result: { errors: [{ message: 'sucks' }] },
-    };
-    renderWithProviders(
-      <MockedProvider mocks={[topicMock]} addTypename={false}>
-        <BrowserRouter>
-          <SelectedTopic onSelect={mockEvent} selected='angular' />
-        </BrowserRouter>
-      </MockedProvider>,
-      {
-        preloadedState: {
-          topics: {
-            ...initialState,
-          },
-          filter: {
-            ...initialFilter,
-          },
-        },
-      }
-    );
-
-    await wait(500);
-
-    expect(screen.getByText('Error: sucks')).toBeInTheDocument();
-  });
-
-  test('render data', async () => {
-    const mockEvent = jest.fn();
-    const topicMock = {
-      request: {
-        query: queries.GET_TOPIC,
-        variables: mockVariables,
-      },
-      result: jest.fn().mockReturnValue({
-        data: mockSelected,
-      }),
-    };
-    renderWithProviders(
-      <MockedProvider mocks={[topicMock]} addTypename={false}>
-        <BrowserRouter>
-          <SelectedTopic onSelect={mockEvent} selected='angular' />
-        </BrowserRouter>
-      </MockedProvider>,
-      {
-        preloadedState: {
-          topics: {
-            ...initialState,
-          },
-          filter: {
-            ...initialFilter,
-          },
-        },
-      }
-    );
-
-    await wait(500);
-
-    const el = await screen.findByTestId('related-topics-table');
-    expect(el).toBeInTheDocument();
+    const divEl = await screen.findByTestId('selected-topic');
+    expect(mockEvent).toHaveBeenCalled();
+    expect(divEl).toBeInTheDocument();
   });
 });

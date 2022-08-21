@@ -1,12 +1,12 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import { useAppSelector } from '../../utils/constants';
-import { getReactTopic } from './topicsApi';
+import { useAppSelector } from '../../../utils/constants';
+import { getReactTopic } from '../services/topicsApi';
 import {
   selectSearchStargarzer,
   selectSearchTopics,
-} from '../filter/filterSlice';
-import P from '../../shared/p';
+} from '../../filter/redux/filterSlice';
+import P from '../../../shared/p';
 
 const SelectedTopic = ({ selected, onSelect }) => {
   const searchStargarzers = useAppSelector(selectSearchStargarzer);
