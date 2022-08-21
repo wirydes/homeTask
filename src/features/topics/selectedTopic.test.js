@@ -1,204 +1,296 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import SelectedTopic from './selectedTopic';
 import { renderWithProviders } from '../../utils/test-utils';
 import { BrowserRouter } from 'react-router-dom';
 import { initialState } from './topicsSlice';
+import { initialState as initialFilter } from '../filter/filterSlice';
+import { MockedProvider } from '@apollo/client/testing';
+import { queries } from './queries';
+import wait from 'waait';
 
-const mockData = {
-  id: 'MDU6VG9waWNyZWFjdC1uYXRpdmU=',
-  name: 'react-native',
-  relatedTopics: [
-    {
-      id: 'MDU6VG9waWNyZWFjdGpz',
-      name: 'reactjs',
-      stargazerCount: 1139,
-    },
-    {
-      id: 'MDU6VG9waWNhcGk=',
-      name: 'api',
-      stargazerCount: 58170,
-    },
-    {
-      id: 'MDU6VG9waWNnb2xhbmc=',
-      name: 'golang',
-      stargazerCount: 1509,
-    },
-    {
-      id: 'MDU6VG9waWNoYWNrdG9iZXJmZXN0',
-      name: 'hacktoberfest',
-      stargazerCount: 15325,
-    },
-    {
-      id: 'MDU6VG9waWNweXRob24=',
-      name: 'python',
-      stargazerCount: 228549,
-    },
-    {
-      id: 'MDU6VG9waWN0eXBlc2NyaXB0',
-      name: 'typescript',
-      stargazerCount: 29123,
-    },
-  ],
-  stargazerCount: 44923,
-  stargazers: [
-    {
-      node: {
-        id: 'MDQ6VXNlcjQ1MTM3NDAy',
-        avatarUrl: 'https://avatars.githubusercontent.com/u/45137402?v=4',
-        email: '',
-        name: null,
+const mockSelected = {
+  topic: {
+    id: 'MDU6VG9waWNhbmd1bGFy',
+    name: 'angular',
+    stargazerCount: 45011,
+    relatedTopics: [
+      {
+        id: 'MDU6VG9waWNyZWFjdA==',
+        name: 'react',
+        stargazerCount: 76402,
+        __typename: 'Topic',
       },
-    },
-    {
-      node: {
-        id: 'MDQ6VXNlcjQ1MTYyMzY3',
-        avatarUrl: 'https://avatars.githubusercontent.com/u/45162367?v=4',
-        email: '',
-        name: 'firststep2florian',
+      {
+        id: 'MDU6VG9waWN2dWU=',
+        name: 'vue',
+        stargazerCount: 50143,
+        __typename: 'Topic',
       },
-    },
-    {
-      node: {
-        id: 'MDQ6VXNlcjQ1MTcyMzE1',
-        avatarUrl:
-          'https://avatars.githubusercontent.com/u/45172315?u=f3017d4e7d4177b63ae8b2bae5ad498592068879&v=4',
-        email: '',
-        name: 'Jerry Lehtisyrjä',
+      {
+        id: 'MDU6VG9waWNhcGk=',
+        name: 'api',
+        stargazerCount: 58320,
+        __typename: 'Topic',
       },
-    },
-    {
-      node: {
-        id: 'MDQ6VXNlcjQ1MjA3Nzc3',
-        avatarUrl: 'https://avatars.githubusercontent.com/u/45207777?v=4',
-        email: '',
-        name: null,
+      {
+        id: 'MDU6VG9waWN0eXBlc2NyaXB0',
+        name: 'typescript',
+        stargazerCount: 29196,
+        __typename: 'Topic',
       },
-    },
-    {
-      node: {
-        id: 'MDQ6VXNlcjQ1Mjg5ODQ2',
-        avatarUrl: 'https://avatars.githubusercontent.com/u/45289846?v=4',
-        email: '',
-        name: null,
+      {
+        id: 'MDU6VG9waWNsaW51eA==',
+        name: 'linux',
+        stargazerCount: 80183,
+        __typename: 'Topic',
       },
-    },
-    {
-      node: {
-        id: 'MDQ6VXNlcjQ1MzIxMTgx',
-        avatarUrl:
-          'https://avatars.githubusercontent.com/u/45321181?u=dfa834d518e13fd3560c33deb4493149abddad8d&v=4',
-        email: '',
-        name: 'Ralf Völker',
+      {
+        id: 'MDU6VG9waWNnb2xhbmc=',
+        name: 'golang',
+        stargazerCount: 1509,
+        __typename: 'Topic',
       },
-    },
-    {
-      node: {
-        id: 'MDQ6VXNlcjQ1MzQwMDY4',
-        avatarUrl:
-          'https://avatars.githubusercontent.com/u/45340068?u=38af028e011ea5eb810c291802f6509d2757da39&v=4',
-        email: '',
-        name: 'Kieran',
+      {
+        id: 'MDU6VG9waWNyZWFjdGpz',
+        name: 'reactjs',
+        stargazerCount: 1143,
+        __typename: 'Topic',
       },
+    ],
+    stargazers: {
+      edges: [
+        {
+          node: {
+            id: 'MDQ6VXNlcjQ1MTE4NDMz',
+            avatarUrl:
+              'https://avatars.githubusercontent.com/u/45118433?u=05d625da10e80779ab7733cbe58988bc7ce7353a&v=4',
+            email: '',
+            name: 'Vittal Kumar',
+            __typename: 'User',
+          },
+          __typename: 'StargazerEdge',
+        },
+        {
+          node: {
+            id: 'MDQ6VXNlcjQ1MTIxOTYw',
+            avatarUrl: 'https://avatars.githubusercontent.com/u/45121960?v=4',
+            email: '',
+            name: null,
+            __typename: 'User',
+          },
+          __typename: 'StargazerEdge',
+        },
+        {
+          node: {
+            id: 'MDQ6VXNlcjQ1MTQ3MjE4',
+            avatarUrl: 'https://avatars.githubusercontent.com/u/45147218?v=4',
+            email: '',
+            name: null,
+            __typename: 'User',
+          },
+          __typename: 'StargazerEdge',
+        },
+        {
+          node: {
+            id: 'MDQ6VXNlcjQ1MTU0OTI2',
+            avatarUrl: 'https://avatars.githubusercontent.com/u/45154926?v=4',
+            email: '',
+            name: null,
+            __typename: 'User',
+          },
+          __typename: 'StargazerEdge',
+        },
+        {
+          node: {
+            id: 'MDQ6VXNlcjQ1MTU4Nzk0',
+            avatarUrl: 'https://avatars.githubusercontent.com/u/45158794?v=4',
+            email: '',
+            name: null,
+            __typename: 'User',
+          },
+          __typename: 'StargazerEdge',
+        },
+        {
+          node: {
+            id: 'MDQ6VXNlcjQ1MTYyMzY3',
+            avatarUrl: 'https://avatars.githubusercontent.com/u/45162367?v=4',
+            email: '',
+            name: 'firststep2florian',
+            __typename: 'User',
+          },
+          __typename: 'StargazerEdge',
+        },
+        {
+          node: {
+            id: 'MDQ6VXNlcjQ1MTYyNzYy',
+            avatarUrl: 'https://avatars.githubusercontent.com/u/45162762?v=4',
+            email: '',
+            name: null,
+            __typename: 'User',
+          },
+          __typename: 'StargazerEdge',
+        },
+        {
+          node: {
+            id: 'MDQ6VXNlcjQ1MjI5OTY5',
+            avatarUrl:
+              'https://avatars.githubusercontent.com/u/45229969?u=c73503dae964b48540be35fc95e2d2d92fa3952c&v=4',
+            email: '',
+            name: 'alittlehotcurry',
+            __typename: 'User',
+          },
+          __typename: 'StargazerEdge',
+        },
+        {
+          node: {
+            id: 'MDQ6VXNlcjQ1MjUyNzgx',
+            avatarUrl:
+              'https://avatars.githubusercontent.com/u/45252781?u=9460d53884db9ba77e84418fa68efec26601b073&v=4',
+            email: '',
+            name: 'Pranav Salunkhe',
+            __typename: 'User',
+          },
+          __typename: 'StargazerEdge',
+        },
+        {
+          node: {
+            id: 'MDQ6VXNlcjQ1MjY4OTky',
+            avatarUrl: 'https://avatars.githubusercontent.com/u/45268992?v=4',
+            email: '',
+            name: null,
+            __typename: 'User',
+          },
+          __typename: 'StargazerEdge',
+        },
+      ],
+      __typename: 'StargazerConnection',
     },
-    {
-      node: {
-        id: 'MDQ6VXNlcjQ1MzczNjQ5',
-        avatarUrl: 'https://avatars.githubusercontent.com/u/45373649?v=4',
-        email: '',
-        name: null,
-      },
-    },
-    {
-      node: {
-        id: 'MDQ6VXNlcjQ1NDM2MDQz',
-        avatarUrl: 'https://avatars.githubusercontent.com/u/45436043?v=4',
-        email: '',
-        name: null,
-      },
-    },
-    {
-      node: {
-        id: 'MDQ6VXNlcjQ1NTAwNzEx',
-        avatarUrl:
-          'https://avatars.githubusercontent.com/u/45500711?u=ab0a582ccd17a66abb77ac764d2fad591578377e&v=4',
-        email: '',
-        name: 'Laleh Asadi',
-      },
-    },
-  ].map((item) => item.node),
+    __typename: 'Topic',
+  },
 };
-
-const mockParams = jest.fn(() => 'angular');
-jest.mock('react-router-dom', () => {
-  // Require the original module to not be mocked...
-  const originalModule = jest.requireActual('react-router-dom');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    // add your noops here
-    useParams: () => mockParams,
-  };
-});
-
-const mockOnSelectTopic = jest.fn(() => 'angular');
-jest.mock('./topicsSlice', () => {
-  // Require the original module to not be mocked...
-  const originalModule = jest.requireActual('./topicsSlice');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    // add your noops here
-    onSelectTopic: () => mockOnSelectTopic,
-  };
-});
+const mockVariables = { name: 'angular', stargazers: 10, relateds: 10 };
 describe('Render SelectedTopic component', () => {
   test('basic render', () => {
+    const mockEvent = jest.fn();
     renderWithProviders(
-      <BrowserRouter>
-        <SelectedTopic />
-      </BrowserRouter>
+      <MockedProvider
+        mocks={[
+          {
+            request: {
+              query: queries.GET_TOPIC,
+              variables: mockVariables,
+            },
+            result: {
+              data: mockSelected,
+            },
+          },
+        ]}
+        addTypename={false}
+      >
+        <BrowserRouter>
+          <SelectedTopic onSelect={mockEvent} selected='angular' />
+        </BrowserRouter>
+      </MockedProvider>
     );
 
     expect(screen.getByText('Selected Topic')).toBeInTheDocument();
   });
 
-  test('render Stargazers', async () => {
+  test('render loading', async () => {
+    const mockEvent = jest.fn();
     renderWithProviders(
-      <BrowserRouter>
-        <SelectedTopic />
-      </BrowserRouter>,
+      <MockedProvider
+        mocks={[
+          {
+            request: {
+              query: queries.GET_TOPIC,
+              variables: mockVariables,
+            },
+          },
+        ]}
+        addTypename={false}
+      >
+        <BrowserRouter>
+          <SelectedTopic onSelect={mockEvent} selected='angular' />
+        </BrowserRouter>
+      </MockedProvider>,
       {
         preloadedState: {
           topics: {
             ...initialState,
-            selectedTopic: mockData,
           },
         },
       }
     );
 
-    expect(screen.getByText('firststep2florian')).toBeInTheDocument();
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
-  test('unmount dispatch', async () => {
-    const { unmount } = renderWithProviders(
-      <BrowserRouter>
-        <SelectedTopic />
-      </BrowserRouter>,
+  test('render error', async () => {
+    const mockEvent = jest.fn();
+    const topicMock = {
+      request: {
+        query: queries.GET_TOPIC,
+        variables: mockVariables,
+      },
+      result: { errors: [{ message: 'sucks' }] },
+    };
+    renderWithProviders(
+      <MockedProvider mocks={[topicMock]} addTypename={false}>
+        <BrowserRouter>
+          <SelectedTopic onSelect={mockEvent} selected='angular' />
+        </BrowserRouter>
+      </MockedProvider>,
       {
         preloadedState: {
           topics: {
             ...initialState,
-            selectedTopic: mockData,
+          },
+          filter: {
+            ...initialFilter,
           },
         },
       }
     );
 
-    unmount();
-    await expect(mockOnSelectTopic).toHaveBeenCalled();
+    await wait(500);
+
+    expect(screen.getByText('Error: sucks')).toBeInTheDocument();
+  });
+
+  test('render data', async () => {
+    const mockEvent = jest.fn();
+    const topicMock = {
+      request: {
+        query: queries.GET_TOPIC,
+        variables: mockVariables,
+      },
+      result: jest.fn().mockReturnValue({
+        data: mockSelected,
+      }),
+    };
+    renderWithProviders(
+      <MockedProvider mocks={[topicMock]} addTypename={false}>
+        <BrowserRouter>
+          <SelectedTopic onSelect={mockEvent} selected='angular' />
+        </BrowserRouter>
+      </MockedProvider>,
+      {
+        preloadedState: {
+          topics: {
+            ...initialState,
+          },
+          filter: {
+            ...initialFilter,
+          },
+        },
+      }
+    );
+
+    await wait(500);
+
+    const el = await screen.findByTestId('related-topics-table');
+    expect(el).toBeInTheDocument();
   });
 });

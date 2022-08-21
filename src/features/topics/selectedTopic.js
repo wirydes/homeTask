@@ -3,7 +3,6 @@ import { useQuery } from '@apollo/client';
 import { useAppSelector } from '../../utils/constants';
 import { getReactTopic } from './topicsApi';
 import {
-  //selectSearchName,
   selectSearchStargarzer,
   selectSearchTopics,
 } from '../filter/filterSlice';
@@ -13,15 +12,14 @@ const SelectedTopic = ({ selected, onSelect }) => {
   const searchStargarzers = useAppSelector(selectSearchStargarzer);
   const searchTopics = useAppSelector(selectSearchTopics);
 
+  const variables = {
+    name: selected,
+    stargazers: searchStargarzers === '' ? 10 : Number(searchStargarzers),
+    relateds: searchTopics === '' ? 10 : Number(searchTopics),
+  };
   const { loading, error, data } = useQuery(getReactTopic(), {
-    variables: {
-      name: selected,
-      stargazers: searchStargarzers === '' ? 10 : Number(searchStargarzers),
-      relateds: searchTopics === '' ? 10 : Number(searchTopics),
-    },
+    variables: variables,
   });
-
-  console.log(error);
 
   const topic = data ? data.topic : null;
   const list = () =>
@@ -87,6 +85,7 @@ const SelectedTopic = ({ selected, onSelect }) => {
               <table
                 className='table table-striped table-hover'
                 id='related-topics-table'
+                data-testid='related-topics-table'
               >
                 <thead>
                   <tr>
