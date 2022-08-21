@@ -13,16 +13,17 @@ const SelectedTopic = ({ selected, onSelect }) => {
   const searchStargarzers = useAppSelector(selectSearchStargarzer);
   const searchTopics = useAppSelector(selectSearchTopics);
 
-  const { loading, error, data } = useQuery(
-    getReactTopic(selected, {
+  const { loading, error, data } = useQuery(getReactTopic(), {
+    variables: {
       name: selected,
-      stargazers: searchStargarzers,
-      topics: searchTopics,
-    })
-  );
+      stargazers: searchStargarzers === '' ? 10 : Number(searchStargarzers),
+      relateds: searchTopics === '' ? 10 : Number(searchTopics),
+    },
+  });
+
+  console.log(error);
 
   const topic = data ? data.topic : null;
-
   const list = () =>
     topic
       ? topic.relatedTopics.map((topic, i) => (
@@ -65,12 +66,14 @@ const SelectedTopic = ({ selected, onSelect }) => {
         ))
       : [];
   return (
-    <>
+    <div id='selected-topic' data-testid='selected-topic'>
       <h2 className='h2'>Selected Topic</h2>
-      <button onClick={() => onSelect('')}>Back</button>
+      <button className='btn btn-primary' onClick={() => onSelect('')}>
+        Back
+      </button>
       {loading && <P>Loading...</P>}
       {error && <P>Error: {error.message}</P>}
-      {!loading && !error && (
+      {!loading && !error && topic && (
         <div style={{ textAlign: 'center' }}>
           Topic: {topic.name}
           <br />
@@ -113,7 +116,7 @@ const SelectedTopic = ({ selected, onSelect }) => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

@@ -179,7 +179,7 @@ const ReactTopic = () => {
             signal: signal,
             paramsQuery: {
               name: searchName,
-              stargarzers: searchStargarzers,
+              stargazers: searchStargarzers,
               topics: searchTopics,
             },
             customQuery,

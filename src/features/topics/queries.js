@@ -1,69 +1,51 @@
-const getQueryParams = (
-  customQuery = { name: '', stargazers: 0, topics: 0 },
-  defaultName
-) => {
-  const { name, stargazers, topics } = customQuery;
-  const search = name ? name : defaultName;
-  const relateds = topics ? Number(topics) : 10;
-  const customStargarzer = stargazers ? Number(stargazers) : 10;
-
-  return {
-    search,
-    relateds,
-    customStargarzer,
-  };
-};
+import { gql } from '@apollo/client';
 export const queries = {
-  getTopics: (name, paramsQuery = { name: '', stargazers: 0, topics: 0 }) => {
-    const { search, relateds, customStargarzer } = getQueryParams(
-      paramsQuery,
-      name
-    );
-    return `{ 
-        topic(name: "${search}") {
-          id,
-          name,
-          stargazerCount,
-          relatedTopics(first: ${relateds}) {
-            id,
-            name,
-            stargazerCount,
-            stargazers(first: ${customStargarzer}) {
+  getTopics: () => {
+    return gql`
+      query GetTopicLanding($name: String!, $relateds: Int, $stargazers: Int) {
+        topic(name: $name) {
+          id
+          name
+          stargazerCount
+          relatedTopics(first: $relateds) {
+            id
+            name
+            stargazerCount
+            stargazers(first: $stargazers) {
               nodes {
-                id,
+                id
                 avatarUrl
               }
             }
-          },
+          }
         }
-      }`;
+      }
+    `;
   },
-  getTopic: (name, paramsQuery) => {
-    const { search, relateds, customStargarzer } = getQueryParams(
-      paramsQuery,
-      name
-    );
-    return `{
-        topic(name: "${search}") {
-          id,
-          name,
-          stargazerCount,
-          relatedTopics(first: ${relateds}) {
-            id,
-            name,
+  getTopic: () => {
+    return gql`
+      query GetTopicSelected($name: String!, $relateds: Int, $stargazers: Int) {
+        topic(name: $name) {
+          id
+          name
+          stargazerCount
+          relatedTopics(first: $relateds) {
+            id
+            name
             stargazerCount
-          },
-          stargazers(first: ${customStargarzer}) {
+          }
+          stargazers(first: $stargazers) {
             edges {
               node {
-                id,
-                avatarUrl,
-                email,
+                id
+                avatarUrl
+                email
                 name
               }
             }
-          },
+          }
         }
-      }`;
+      }
+    `;
   },
 };

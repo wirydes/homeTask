@@ -7,23 +7,33 @@ export function getReactTopics({
   paramsQuery = { name: '', stargazers: 3, topics: 3 },
   customQuery = '',
 }) {
-  const query = customQuery
-    ? `{${customQuery}}`
-    : queries.getTopics('react', paramsQuery, customQuery);
+  if (customQuery) {
+    return client.query({
+      query: gql`
+        ${customQuery}
+      `,
+    });
+  }
+
+  const query = queries.getTopics();
+  const { name, stargazers, topics } = paramsQuery;
+  const variables = {
+    name: name ? name : 'react',
+    stargazers: stargazers === '' ? 3 : Number(stargazers),
+    relateds: topics === '' ? 3 : Number(topics),
+  };
   return client.query({
-    query: gql`
-      ${query}
-    `,
+    query: query,
+    variables: variables,
   });
 }
 
-export function getReactTopic(
-  name,
-  paramsQuery = { name: '', stargazers: 3, topics: 3 },
-  customQuery = ''
-) {
-  const query = customQuery ? customQuery : queries.getTopic(name, paramsQuery);
-  return gql`
-    ${query}
-  `;
+export function getReactTopic(customQuery = '') {
+  if (customQuery) {
+    return gql`
+      ${customQuery}
+    `;
+  }
+
+  return queries.getTopic();
 }

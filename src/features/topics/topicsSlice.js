@@ -15,7 +15,7 @@ export const getTopics = createAsyncThunk(
   'topics/fetch',
   async ({
     signal,
-    paramsQuery = { name: '', stargazers: '', topics: '' },
+    paramsQuery = { name: '', stargazers: 3, topics: 3 },
     customQuery = '',
   }) => {
     const { data, error } = await getReactTopics({
